@@ -1,6 +1,8 @@
 package com.example.SportyRest.service;
 
+import com.example.SportyRest.model.Equipo;
 import com.example.SportyRest.model.Equipo_miembro;
+import com.example.SportyRest.model.Usuario;
 import com.example.SportyRest.repository.EquipoMiembroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,12 +19,20 @@ public class EquipoMiembroService {
         return equipoMiembroRepository.save(equipoMiembro);
     }
 
-    public List<Equipo_miembro> obtenerMiembrosPorEquipo(int equipoId) {
-        return equipoMiembroRepository.findByEquipoId(equipoId);
+    public List<Equipo_miembro> obtenerMiembrosPorEquipo(Equipo equipoId) {
+        return equipoMiembroRepository.findByEquipo(equipoId);
     }
 
-    public List<Equipo_miembro> obtenerMiembrosPorUsuario(int usuarioId) {
-        return equipoMiembroRepository.findByUsuarioId(usuarioId);
+    public List<Equipo_miembro> obtenerMiembrosPorUsuario(Usuario usuario) {
+        return equipoMiembroRepository.findByUsuario(usuario);
+    }
+
+    public List<Usuario> obtenerUsuariosporEquipo(int equipo){
+        return equipoMiembroRepository.findUsuariosByEquipoId(equipo);
+    }
+
+    public List<Equipo> obtenerEquiposPorUsuario(int usuario){
+        return equipoMiembroRepository.findEquiposByUsuarioId(usuario);
     }
 
     public Optional<Equipo_miembro> obtenerMiembroPorId(int id) {

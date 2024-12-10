@@ -1,6 +1,8 @@
 package com.example.SportyRest.controller;
 
+import com.example.SportyRest.model.Equipo;
 import com.example.SportyRest.model.Equipo_miembro;
+import com.example.SportyRest.model.Usuario;
 import com.example.SportyRest.service.EquipoMiembroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,14 +28,14 @@ public class EquipoMiembroController {
 
     // Obtener todos los miembros de un equipo
     @GetMapping("/equipo/{equipoId}")
-    public ResponseEntity<List<Equipo_miembro>> obtenerMiembrosPorEquipo(@PathVariable int equipoId) {
+    public ResponseEntity<List<Equipo_miembro>> obtenerMiembrosPorEquipo(@PathVariable Equipo equipoId) {
         List<Equipo_miembro> miembros = equipoMiembroService.obtenerMiembrosPorEquipo(equipoId);
         return new ResponseEntity<>(miembros, HttpStatus.OK);
     }
 
     // Obtener todos los equipos de un usuario
     @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<Equipo_miembro>> obtenerMiembrosPorUsuario(@PathVariable int usuarioId) {
+    public ResponseEntity<List<Equipo_miembro>> obtenerMiembrosPorUsuario(@PathVariable Usuario usuarioId) {
         List<Equipo_miembro> miembros = equipoMiembroService.obtenerMiembrosPorUsuario(usuarioId);
         return new ResponseEntity<>(miembros, HttpStatus.OK);
     }
