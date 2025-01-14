@@ -2,7 +2,6 @@ package com.example.SportyRest.service;
 
 import com.example.SportyRest.model.Usuario;
 import com.example.SportyRest.repository.UsuarioRepository;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -37,5 +36,7 @@ public class UsuarioService {
     public Usuario getUserByNickname(String nickname){
         return usuarioRepository.findByNickname(nickname);
     }
+
+    public Usuario getUserById(int id){return usuarioRepository.findByIdusuario(id);}
 
 }

@@ -3,6 +3,8 @@ package com.example.SportyRest.controller;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.example.SportyRest.model.Equipo;
+import com.example.SportyRest.model.Equipo_miembro;
+import com.example.SportyRest.service.EquipoMiembroService;
 import com.example.SportyRest.service.EquipoService;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Autowired;

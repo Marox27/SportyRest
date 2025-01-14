@@ -46,7 +46,7 @@ public class ParticipanteService {
     public List<Participante> getParticipantesByUsuario(int usuarioId) {
         Usuario usuario;
         try{
-            usuario = usuarioRepository.findById(usuarioId);
+            usuario = usuarioRepository.findByIdusuario(usuarioId);
             if (usuario == null){
                 throw new ChangeSetPersister.NotFoundException();
             }
@@ -70,7 +70,7 @@ public class ParticipanteService {
             // Crear un nuevo participante directamente con los IDs
             Participante participante = new Participante();
             participante.setActividad(actividadRepository.findById(idActividad));
-            participante.setUsuario(usuarioRepository.findById(usuarioId));
+            participante.setUsuario(usuarioRepository.findByIdusuario(usuarioId));
 
             // Guardar el nuevo participante utilizando el servicio correspondiente
             participanteRepository.save(participante);

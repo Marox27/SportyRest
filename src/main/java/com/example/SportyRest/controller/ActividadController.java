@@ -45,7 +45,7 @@ public class ActividadController {
             // Crear un participante para esta actividad
             Participante participante = new Participante();
             participante.setActividad(actividadGuardada);  // Usa la actividad guardada
-            participante.setUsuario(usuarioRepository.findById(actividad.getCreador()));
+            participante.setUsuario(usuarioRepository.findByIdusuario(actividad.getCreador()));
             participante.setFechaIngreso(LocalDateTime.now().toString());
             participante.setActivo(true);  // El participante está activo
 
