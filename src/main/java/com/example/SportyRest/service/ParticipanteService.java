@@ -65,12 +65,13 @@ public class ParticipanteService {
         return participanteRepository.findActividadesByUsuarioId(idUsuario);
     }
 
-    public boolean unirseActividadGratis(int idActividad, int usuarioId) {
+    public boolean unirseActividad(int idActividad, int usuarioId) {
         try {
             // Crear un nuevo participante directamente con los IDs
             Participante participante = new Participante();
             participante.setActividad(actividadRepository.findById(idActividad));
             participante.setUsuario(usuarioRepository.findByIdusuario(usuarioId));
+            participante.setPagoConfirmado(true);
 
             // Guardar el nuevo participante utilizando el servicio correspondiente
             participanteRepository.save(participante);

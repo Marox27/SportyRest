@@ -24,22 +24,32 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        System.out.println(loginRequest.getUsername() + " " + loginRequest.getPassword());
         Usuario user = authService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
         System.out.println(user);
         Map<String, Object> claims = new HashMap<>();
-        if (user != null && user.isIs_admin()) {
-            claims.put("role", "ADMIN");
-            claims.put("isAdmin", true);
-            String token = jwtTokenUtil.generateToken(user.getNickname(),claims);
-            return ResponseEntity.ok(new LoginResponse(user.getId().intValue(), token));
-        }else if (user != null && !user.isIs_admin()){
-            claims.put("role", "USER");
-            claims.put("isAdmin", false);
-            String token = jwtTokenUtil.generateToken(user.getNickname(),claims);
-            return ResponseEntity.ok(new LoginResponse(user.getId().intValue(), token));
+        if (user == null){
+            return ResponseEntity.status(401).body("Credenciales inválidas");
         }
-        return ResponseEntity.status(401).body("Credenciales inválidas");
+        if (user.isActivo()) {
+            if (user.isIs_admin()) {
+                claims.put("role", "ADMIN");
+                claims.put("isAdmin", true);
+                String token = jwtTokenUtil.generateToken(user.getNickname(), claims);
+                return ResponseEntity.ok(new LoginResponse(user.getId().intValue(), token));
+            } else {
+                claims.put("role", "USER");
+                claims.put("isAdmin", false);
+                String token = jwtTokenUtil.generateToken(user.getNickname(), claims);
+                return ResponseEntity.ok(new LoginResponse(user.getId().intValue(), token));
+            }
+        }
+        return ResponseEntity.status(403).body("Usuario inactivo");
     }
+
+    @GetMapping("validar-token")
+    public ResponseEntity<Boolean> validarToken(@RequestParam String token) {
+        return ResponseEntity.status(403).body(jwtTokenUtil.validateToken(token));
+    }
+
 }
 

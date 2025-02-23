@@ -25,7 +25,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .csrf(AbstractHttpConfigurer::disable) // Deshabilitar CSRF
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Sin sesiones
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login").permitAll() // Permitir rutas públicas
+                        .requestMatchers("/api/usuarios/create","/api/usuarios/check-user", "/api/equipos/subirImagen","/api/login","/api/verification/send-code", "/api/verification/verify", "/api/provincias").permitAll() // Permitir rutas públicas
                         .anyRequest().permitAll() //.authenticated() //.permitAll() // Proteger el resto
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Filtro JWT
@@ -33,6 +33,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         return http.build();
     }
 
+    /*
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // Permitir todas las rutas
@@ -40,5 +41,6 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowCredentials(true); // Opcional: permitir cookies o tokens
     }
+    */
 
 }

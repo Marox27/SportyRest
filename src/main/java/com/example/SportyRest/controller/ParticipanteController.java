@@ -4,7 +4,6 @@ import com.example.SportyRest.model.Actividad;
 import com.example.SportyRest.model.Participante;
 import com.example.SportyRest.service.ParticipanteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,11 +53,11 @@ public class ParticipanteController {
         return ResponseEntity.ok(actividades);
     }
 
-    @PostMapping("/unirseGratis")
+    @PostMapping("/unirse")
     public ResponseEntity<Boolean> unirseActividadGratis(
             @RequestParam int idActividad,
             @RequestParam int usuarioId) {
-        boolean resultado = participanteService.unirseActividadGratis(idActividad, usuarioId);
+        boolean resultado = participanteService.unirseActividad(idActividad, usuarioId);
         return ResponseEntity.ok(resultado);
     }
 

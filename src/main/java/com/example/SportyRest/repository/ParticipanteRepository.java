@@ -16,7 +16,7 @@ public interface ParticipanteRepository extends JpaRepository<Participante, Inte
     List<Participante> findByUsuario(Usuario usuario);
 
     // Devuelve las actividades en las que participa un usuario dado su id de usuario.
-    @Query("SELECT p.actividad FROM Participante p WHERE p.usuario.id = :idUsuario AND p.activo = true")
+    @Query("SELECT p.actividad FROM Participante p WHERE p.usuario.id = :idUsuario AND p.confirmado = true")
     List<Actividad> findActividadesByUsuarioId(@Param("idUsuario") int idUsuario);
 
 }

@@ -22,21 +22,13 @@ public class EquipoMiembroController {
     // Crear un miembro en un equipo
     @PostMapping
     public ResponseEntity<Equipo_miembro> crearMiembro(@RequestBody Equipo_miembro equipoMiembro) {
-        Equipo_miembro nuevoMiembro = equipoMiembroService.crearMiembro(equipoMiembro);
-        return new ResponseEntity<>(nuevoMiembro, HttpStatus.CREATED);
+        return ResponseEntity.ok(equipoMiembroService.crearMiembro(equipoMiembro));
     }
 
     // Obtener todos los miembros de un equipo
     @GetMapping("/equipo/{equipoId}")
     public ResponseEntity<List<Equipo_miembro>> obtenerMiembrosPorEquipo(@PathVariable Equipo equipoId) {
         List<Equipo_miembro> miembros = equipoMiembroService.obtenerMiembrosPorEquipo(equipoId);
-        return new ResponseEntity<>(miembros, HttpStatus.OK);
-    }
-
-    // Obtener todos los equipos de un usuario
-    @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<Equipo_miembro>> obtenerMiembrosPorUsuario(@PathVariable Usuario usuarioId) {
-        List<Equipo_miembro> miembros = equipoMiembroService.obtenerMiembrosPorUsuario(usuarioId);
         return new ResponseEntity<>(miembros, HttpStatus.OK);
     }
 

@@ -1,8 +1,11 @@
 package com.example.SportyRest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Actividad {
@@ -28,10 +31,21 @@ public class Actividad {
     @Column()
     private int num_participantes = 1; // Refleja el valor predeterminado en la base de datos
 
-    @Column(nullable = false)
+    @Column(name = "participantes_necesarios", nullable = false)
     private int participantesNecesarios;
 
-    @Column(nullable = false)
+    @Column(name = "fecha_limite_cancelacion", nullable = false)
+    private String fechaLimiteCancelacion;
+
+    @ManyToMany
+    @JoinTable(
+            name = "etiquetas_actividad",
+            joinColumns = @JoinColumn(name = "idactividad"),
+            inverseJoinColumns = @JoinColumn(name = "id_etiqueta")
+    )
+    private Set<Etiqueta> etiquetas = new HashSet<>();
+
+    @Column(name = "creador", nullable = false)
     private int creador;
 
     @Column(nullable = false)
@@ -163,12 +177,28 @@ public class Actividad {
         this.activo = activo;
     }
 
+    public Set<Etiqueta> getEtiquetas() {
+        return etiquetas;
+    }
+
+    public void setEtiquetas(Set<Etiqueta> etiquetas) {
+        this.etiquetas = etiquetas;
+    }
+
     public String getFecha_publicacion() {
         return fecha_publicacion;
     }
 
     public void setFecha_publicacion(String fecha_publicacion) {
         this.fecha_publicacion = fecha_publicacion;
+    }
+
+    public String getFechaLimiteCancelacion() {
+        return fechaLimiteCancelacion;
+    }
+
+    public void setFechaLimiteCancelacion(String fechaLimiteCancelacion) {
+        this.fechaLimiteCancelacion = fechaLimiteCancelacion;
     }
 }
 

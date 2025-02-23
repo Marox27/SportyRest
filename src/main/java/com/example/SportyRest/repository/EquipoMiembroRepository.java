@@ -14,8 +14,8 @@ import java.util.List;
 @Repository
 public interface EquipoMiembroRepository extends JpaRepository<Equipo_miembro, Integer> {
     // Aquí puedes agregar métodos personalizados si es necesario
-    List<Equipo_miembro> findByEquipo(Equipo equipoId);
-    List<Equipo_miembro> findByUsuario(Usuario usuarioId);
+    List<Equipo_miembro> findByEquipo(Equipo equipo);
+    List<Equipo_miembro> findByUsuario(Usuario usuario);
 
     // Devuelve los usuarios que pertenecen a un equipo dado su id de equipo.
     @Query("SELECT e.usuario FROM Equipo_miembro e WHERE e.equipo.id = :idEquipo")

@@ -4,6 +4,7 @@ import com.example.SportyRest.model.Equipo;
 import com.example.SportyRest.model.Equipo_miembro;
 import com.example.SportyRest.model.Usuario;
 import com.example.SportyRest.repository.EquipoMiembroRepository;
+import com.example.SportyRest.repository.EquipoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -14,9 +15,20 @@ public class EquipoMiembroService {
 
     @Autowired
     private EquipoMiembroRepository equipoMiembroRepository;
+    @Autowired
+    private EquipoRepository equipoRepository;
 
     public Equipo_miembro crearMiembro(Equipo_miembro equipoMiembro) {
-        return equipoMiembroRepository.save(equipoMiembro);
+        // Guardamos el nuevo miembro
+        Equipo_miembro equipo_miembro_guardado = equipoMiembroRepository.save(equipoMiembro);
+
+        //Sí el guardado es exitoso actualizamos el número de miembros del equipo asociado
+        Equipo equipo = equipoMiembro.getEquipo();
+        equipo.setMiembros(equipo.getMiembros() + 1);
+        equipoRepository.saveAndFlush(equipo);
+
+        // Por último devolvemos los datos del miembro
+        return equipo_miembro_guardado;
     }
 
     public List<Equipo_miembro> obtenerMiembrosPorEquipo(Equipo equipoId) {

@@ -14,12 +14,14 @@ public class Usuario {
     private String nickname;
     @Column(nullable = false, unique = true)
     private String mail;
-    private String telefono;
     private String password;
+    @Column(name = "fecha_nacimiento")
+    private String fecha_nacimiento;
     private String ciudad;
     private String pfp;
     private boolean is_admin;
     private boolean activo;
+    private boolean baneado = false;
 
     // Getters y setters
     public Long getId() {
@@ -54,11 +56,14 @@ public class Usuario {
         this.nickname = nickname;
     }
 
-    // Teléfono
-    public String getTelefono() {
-        return telefono;
+
+    public String getFecha_nacimiento() {
+        return fecha_nacimiento;
     }
-    public void setTelefono(String telefono) {this.telefono = telefono;}
+
+    public void setFecha_nacimiento(String fecha_nacimiento) {
+        this.fecha_nacimiento = fecha_nacimiento;
+    }
 
     // Password
     public String getPassword(){
@@ -70,7 +75,7 @@ public class Usuario {
     }
 
     public void setPassword(String password) {
-        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+        this.password = password;
     }
     public String getEmail() {
         return mail;
@@ -112,6 +117,14 @@ public class Usuario {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public boolean isBaneado() {
+        return baneado;
+    }
+
+    public void setBaneado(boolean baneado) {
+        this.baneado = baneado;
     }
 }
 

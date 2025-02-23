@@ -6,7 +6,8 @@ import jakarta.persistence.*;
 public class Equipo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idequipo;
+    @Column(name = "idequipo")
+    private Integer idequipo;
     @Column(nullable = false)
     private String nombre;
     private String provincia;
@@ -15,11 +16,12 @@ public class Equipo {
     private String privacidad;
     private String detalles;
     private String imagen;
-    private int miembros;
+    private int miembros = 1;
     private int creador;
     private int deporte;
+    private boolean activo = true;
 
-    public int getIdequipo() {
+    public Integer getIdequipo() {
         return idequipo;
     }
 
@@ -89,6 +91,14 @@ public class Equipo {
 
     public void setCreador(int creador) {
         this.creador = creador;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 
     public int getDeporte() {

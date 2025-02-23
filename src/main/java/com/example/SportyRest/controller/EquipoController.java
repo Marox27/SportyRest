@@ -25,6 +25,8 @@ public class EquipoController {
 
     @Autowired
     private EquipoService equipoService;
+    @Autowired
+    private EquipoMiembroService equipoMiembroService;
 
     // Crear un equipo
     @PostMapping
@@ -36,6 +38,13 @@ public class EquipoController {
     @GetMapping
     public ResponseEntity<List<Equipo>> getAllEquipos() {
         return ResponseEntity.ok(equipoService.getAllEquipos());
+    }
+
+    // Obtener todos los equipos de un usuario
+    @GetMapping("usuario")
+    public ResponseEntity<List<Equipo>> obtenerEquiposPorUsuario(@RequestParam int idUsuario) {
+        List<Equipo> miembros = equipoMiembroService.obtenerEquiposPorUsuario(idUsuario);
+        return new ResponseEntity<>(miembros, HttpStatus.OK);
     }
 
     // Obtener un equipo por ID

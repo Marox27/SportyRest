@@ -15,9 +15,20 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final Set<String> RUTAS_PERMITIDAS = Set.of(
+            "/api/login",
+            "/api/verification/send-code",
+            "/api/verification/verify",
+            "/api/provincias",
+            "/api/usuarios/create",
+            "/api/usuarios/check-user",
+            "/api/equipos/subirImagen"
+    );
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -28,12 +39,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
-        // Permitir el acceso a "/api/login" sin token
-        if (path.equals("/api/login")) {
+
+        // Permitir el acceso a ciertas rutas públicas sin token
+        if (RUTAS_PERMITIDAS.contains(path)) {
             filterChain.doFilter(request, response);
             return;
         }
-
         // Obtener el encabezado Authorization
         String authorizationHeader = request.getHeader("Authorization");
 

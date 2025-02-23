@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 public class Participante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_participante")
     private int id;
 
     @ManyToOne
@@ -17,11 +18,14 @@ public class Participante {
     @JoinColumn(name = "usuario", nullable = false)
     private Usuario usuario;
 
-    @Column(nullable = false)
+    @Column(name = "fecha_ingreso" ,nullable = false)
     private String fechaIngreso = LocalDateTime.now().toString();
 
-    @Column(nullable = false)
-    private boolean activo = true;
+    @Column(name = "confirmado", nullable = false)
+    private boolean confirmado = true;
+
+    @Column(name = "pago_confirmado", nullable = false)
+    private boolean pagoConfirmado = false;
 
     // Getters y Setters
     public int getId() {
@@ -56,11 +60,19 @@ public class Participante {
         this.fechaIngreso = fechaIngreso;
     }
 
-    public boolean isActivo() {
-        return activo;
+    public boolean isConfirmado() {
+        return confirmado;
     }
 
-    public void setActivo(boolean activo) {
-        this.activo = activo;
+    public void setConfirmado(boolean confirmado) {
+        this.confirmado = confirmado;
+    }
+
+    public boolean isPagoConfirmado() {
+        return pagoConfirmado;
+    }
+
+    public void setPagoConfirmado(boolean pagoConfirmado) {
+        this.pagoConfirmado = pagoConfirmado;
     }
 }

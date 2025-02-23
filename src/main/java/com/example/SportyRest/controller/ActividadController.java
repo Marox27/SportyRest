@@ -6,12 +6,10 @@ import com.example.SportyRest.repository.ActividadRepository;
 import com.example.SportyRest.repository.ParticipanteRepository;
 import com.example.SportyRest.repository.UsuarioRepository;
 import com.example.SportyRest.service.ActividadService;
-import com.example.SportyRest.service.ParticipanteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -47,7 +45,7 @@ public class ActividadController {
             participante.setActividad(actividadGuardada);  // Usa la actividad guardada
             participante.setUsuario(usuarioRepository.findByIdusuario(actividad.getCreador()));
             participante.setFechaIngreso(LocalDateTime.now().toString());
-            participante.setActivo(true);  // El participante está activo
+            participante.setConfirmado(true);  // El participante está activo
 
             // Guardar el participante
             participanteRepository.save(participante);
@@ -86,10 +84,11 @@ public class ActividadController {
     }
 
     @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<List<Actividad>> getActividadesUsuario(@PathVariable int idUsuario) {
+    public ResponseEntity<List<Actividad>> getActividadesUsuario(@PathVariable Long idUsuario) {
         List<Actividad> actividadesUsuario = actividadService.getActividadesPorUsuario(idUsuario);
         return ResponseEntity.ok(actividadesUsuario);
     }
+
 
 
 }

@@ -1,9 +1,15 @@
 package com.example.SportyRest.service;
 
 import com.example.SportyRest.model.Equipo;
+import com.example.SportyRest.model.Equipo_miembro;
+import com.example.SportyRest.repository.EquipoMiembroRepository;
 import com.example.SportyRest.repository.EquipoRepository;
+import com.example.SportyRest.repository.UsuarioRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,11 +19,30 @@ public class EquipoService {
 
     @Autowired
     private EquipoRepository equipoRepository;
+    @Autowired
+    private  EquipoMiembroRepository equipoMiembroRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     // Crear un equipo
+    @Transactional
     public Equipo createEquipo(Equipo equipo) {
-        return equipoRepository.save(equipo);
+        // Guardar el equipo
+        Equipo equipoGuardado = equipoRepository.save(equipo);
+
+        // Crear el miembro (creador del equipo)
+        Equipo_miembro equipoMiembro = new Equipo_miembro();
+        equipoMiembro.setEquipo(equipoGuardado);
+        equipoMiembro.setUsuario(usuarioRepository.findByIdusuario(equipoGuardado.getCreador()));
+        equipoMiembro.setRol(Equipo_miembro.Rol.ADMIN);
+
+        // Guardar el equipo miembro
+        equipoMiembroRepository.save(equipoMiembro);
+
+        return equipoGuardado;
     }
+
 
     // Obtener todos los equipos
     public List<Equipo> getAllEquipos() {

@@ -1,11 +1,13 @@
 package com.example.SportyRest.service;
 
 import com.example.SportyRest.model.Actividad;
+import com.example.SportyRest.model.Usuario;
 import com.example.SportyRest.repository.ActividadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,10 +43,12 @@ public class ActividadService {
     }
 
     public List<Actividad> getActividadesCercanas(double latitud, double longitud, double distancia) {
-        return actividadRepository.findActividadesCercanas(latitud, longitud, distancia);
+        List<Actividad> actividadesCercanas = actividadRepository.findActividadesCercanas(latitud, longitud, distancia);
+        System.out.println("Actividades Cercanas: " + actividadesCercanas.size());
+        return actividadesCercanas;
     }
 
-    public List<Actividad> getActividadesPorUsuario(int idUsuario) {
+    public List<Actividad> getActividadesPorUsuario(Long idUsuario) {
         return actividadRepository.findByCreador(idUsuario);
     }
 
