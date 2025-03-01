@@ -24,7 +24,8 @@ public class EquipoMiembroService {
 
         //Sí el guardado es exitoso actualizamos el número de miembros del equipo asociado
         Equipo equipo = equipoMiembro.getEquipo();
-        equipo.setMiembros(equipo.getMiembros() + 1);
+        int numeroDeMiembros = equipoMiembroRepository.countByEquipo(equipo);
+        equipo.setMiembros(numeroDeMiembros);
         equipoRepository.saveAndFlush(equipo);
 
         // Por último devolvemos los datos del miembro
@@ -47,12 +48,54 @@ public class EquipoMiembroService {
         return equipoMiembroRepository.findEquiposByUsuarioId(usuario);
     }
 
+    // Obtener equipos donde un usuario es miembro
+    public List<Equipo> obtenerEquiposPorUsuarioMiembro(int usuario){
+        return equipoMiembroRepository.findEquiposDondeUsuarioEsMiembro(usuario);
+    }
+
     public Optional<Equipo_miembro> obtenerMiembroPorId(int id) {
         return equipoMiembroRepository.findById(id);
     }
 
     public void eliminarMiembro(int id) {
-        equipoMiembroRepository.deleteById(id);
+        Equipo_miembro miembro = equipoMiembroRepository.findByIdMiembro(id);
+        equipoMiembroRepository.delete(miembro);
+        Equipo equipo = miembro.getEquipo();
+        int numeroDeMiembros = equipoMiembroRepository.countByEquipo(equipo);
+        equipo.setMiembros(numeroDeMiembros);
+        equipoRepository.save(equipo);
     }
+
+    public void eliminarMiembroYEquiposUsuarioEliminado(Usuario usuario){
+        // Obtenemos todos las participaciones que tiene el usuario en diferentes equipos
+        List<Equipo_miembro> equipoMiembros = equipoMiembroRepository.findByUsuario(usuario);
+
+        // Si el usuario es lider de algun equipo se traslada el lider de haber mas miembros si no se elimina.
+        // Después de eso se elimina al usuario del equipo
+        for (Equipo_miembro equipoMiembro : equipoMiembros) {
+            Equipo equipo = equipoMiembro.getEquipo();
+            List<Equipo_miembro> miembrosDelEquipo = equipoMiembroRepository.findByEquipo(equipo);
+
+            if (equipoMiembro.getRol().equals(Equipo_miembro.Rol.ADMIN)) {
+                if (miembrosDelEquipo.size() > 1) {
+                    for (Equipo_miembro miembro : miembrosDelEquipo) {
+                        if (!miembro.getUsuario().getId().equals(usuario.getId())) {
+                            miembro.setRol(Equipo_miembro.Rol.ADMIN);
+                            equipoMiembroRepository.save(miembro);
+                            break;
+                        }
+                    }
+                }
+            }
+            equipoMiembroRepository.delete(equipoMiembro); // Eliminar usuario del equipo
+
+            // Si después de eliminarlo no quedan miembros, eliminamos el equipo
+            if (equipoMiembroRepository.findByEquipo(equipo).isEmpty()) {
+                equipoRepository.delete(equipo);
+            }
+        }
+
+    }
+
 }
 

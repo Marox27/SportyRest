@@ -40,8 +40,15 @@ public class EquipoController {
         return ResponseEntity.ok(equipoService.getAllEquipos());
     }
 
+    // Obtener todos los creados por un usuario
+    @GetMapping("/creador/{idUsuario}")
+    public ResponseEntity<List<Equipo>> getEquiposCreadosPorUsuario(@PathVariable int idUsuario) {
+        return ResponseEntity.ok(equipoService.obtenerEquiposCreadosPorUsuario(idUsuario));
+    }
+
+
     // Obtener todos los equipos de un usuario
-    @GetMapping("usuario")
+    @GetMapping("/usuario")
     public ResponseEntity<List<Equipo>> obtenerEquiposPorUsuario(@RequestParam int idUsuario) {
         List<Equipo> miembros = equipoMiembroService.obtenerEquiposPorUsuario(idUsuario);
         return new ResponseEntity<>(miembros, HttpStatus.OK);
@@ -66,9 +73,9 @@ public class EquipoController {
     }
 
     // Eliminar un equipo
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEquipo(@PathVariable int id) {
-        equipoService.deleteEquipo(id);
+    @DeleteMapping("/eliminar")
+    public ResponseEntity<Void> deleteEquipo(@RequestParam("idEquipo") int idEquipo) {
+        equipoService.deleteEquipo(idEquipo);
         return ResponseEntity.noContent().build();
     }
 

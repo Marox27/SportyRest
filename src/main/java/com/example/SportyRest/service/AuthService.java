@@ -18,9 +18,8 @@ public class AuthService {
 
     public Usuario authenticate(String username, String password) {
         Usuario usuario = usuarioRepository.findByNickname(username);
-        System.out.println(password + " " + usuario.getPassword());
         if (usuario != null && BCrypt.checkpw(password, usuario.getPassword())) {
-            System.out.println("Authservice: " + username + password + " " + usuario.getPassword());
+            System.out.println("Authservice: " + username);
             System.out.println(BCrypt.checkpw(password, usuario.getPassword()));
             return usuario;
         }

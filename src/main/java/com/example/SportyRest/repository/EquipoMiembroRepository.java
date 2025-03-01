@@ -17,6 +17,11 @@ public interface EquipoMiembroRepository extends JpaRepository<Equipo_miembro, I
     List<Equipo_miembro> findByEquipo(Equipo equipo);
     List<Equipo_miembro> findByUsuario(Usuario usuario);
 
+    // Devulve el equipo dado un miembro
+    Equipo_miembro findByIdMiembro(int idMiembro);
+
+    int countByEquipo(Equipo equipo);
+
     // Devuelve los usuarios que pertenecen a un equipo dado su id de equipo.
     @Query("SELECT e.usuario FROM Equipo_miembro e WHERE e.equipo.id = :idEquipo")
     List<Usuario> findUsuariosByEquipoId(@Param("idEquipo") int idEquipo);
@@ -24,6 +29,11 @@ public interface EquipoMiembroRepository extends JpaRepository<Equipo_miembro, I
     // Devuelve los equipos a lo que pertenece un usuario dado su id de usuario.
     @Query("SELECT e.equipo FROM Equipo_miembro e WHERE e.usuario.id = :idUsuario")
     List<Equipo> findEquiposByUsuarioId(@Param("idUsuario") int idUsuario);
+
+    // Equipos a los que pertenece un usuario pero no es el creador.
+    @Query("SELECT em.equipo FROM Equipo_miembro em WHERE em.usuario.id = :idUsuario AND em.equipo.creador <> :idUsuario")
+    List<Equipo> findEquiposDondeUsuarioEsMiembro(@Param("idUsuario") int idUsuario);
+
 
 }
 

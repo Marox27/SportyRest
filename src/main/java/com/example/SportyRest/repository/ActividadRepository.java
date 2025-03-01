@@ -21,6 +21,12 @@ public interface ActividadRepository extends JpaRepository<Actividad, Integer> {
     // Devuelve las actvidades dado el id del
     List<Actividad> findByCreador(Long creador);
 
+    // Devuelve las actividades activas del creadas por X usuario.
+    List<Actividad> findByCreadorAndActivoTrue(Long creador);
+
+    // Devuelve las actividades activas
+    List<Actividad> findByActivoTrue();
+
     //List<Actividad> findByFechaHoraFinalizacionBefore(LocalDateTime ahora);
 
     @Query("SELECT a FROM Actividad a WHERE " + "earth_distance(ll_to_earth(:latitud, :longitud)," +

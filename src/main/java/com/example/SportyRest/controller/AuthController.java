@@ -46,9 +46,11 @@ public class AuthController {
         return ResponseEntity.status(403).body("Usuario inactivo");
     }
 
-    @GetMapping("validar-token")
+    @GetMapping("/validar-token")
     public ResponseEntity<Boolean> validarToken(@RequestParam String token) {
-        return ResponseEntity.status(403).body(jwtTokenUtil.validateToken(token));
+        boolean ok = jwtTokenUtil.validateToken(token);
+        System.out.println("token:" + token + " Valido: " + ok);
+        return ResponseEntity.ok(jwtTokenUtil.validateToken(token));
     }
 
 }

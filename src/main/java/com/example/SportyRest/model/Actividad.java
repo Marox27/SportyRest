@@ -60,7 +60,7 @@ public class Actividad {
     @Column(nullable = false)
     private String lugar;
 
-    @Column()
+    @Column(nullable = false)
     private boolean activo = true; // Refleja el valor predeterminado en la base de datos
 
     private String fecha_publicacion = LocalDate.now().toString(); // Refleja el valor predeterminado en la base de datos

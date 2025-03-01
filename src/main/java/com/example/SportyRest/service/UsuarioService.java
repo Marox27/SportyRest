@@ -4,10 +4,13 @@ import com.example.SportyRest.model.Equipo;
 import com.example.SportyRest.model.Usuario;
 import com.example.SportyRest.repository.EquipoMiembroRepository;
 import com.example.SportyRest.repository.EquipoRepository;
+import com.example.SportyRest.repository.ParticipanteRepository;
 import com.example.SportyRest.repository.UsuarioRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +23,12 @@ public class UsuarioService {
     private EquipoRepository equipoRepository;
     @Autowired
     private EquipoMiembroRepository equipoMiembroRepository;
+    @Autowired
+    private EquipoMiembroService equipoMiembroService;
+    @Autowired
+    private ParticipanteService participanteService;
+    @Autowired
+    private ActividadService actividadService;
 
     public Usuario createUser(Usuario usuario) {
         // Hashear la contraseña antes de guardar
@@ -33,6 +42,16 @@ public class UsuarioService {
             e.printStackTrace();
             throw e; // Puedes lanzar la excepción o manejarla según lo necesites
         }
+    }
+
+    public boolean updateUsuarioInfo(Usuario usuario){
+        Usuario usuarioOriginal = usuarioRepository.findByIdusuario(usuario.getId().intValue());
+        usuarioOriginal.setName(usuario.getName());
+        usuarioOriginal.setApellidos(usuario.getApellidos());
+        usuarioOriginal.setCiudad(usuario.getCiudad());
+        usuarioOriginal.setpfp(usuario.getPfp());
+        usuarioRepository.save(usuarioOriginal);
+        return true;
     }
 
     public void updatePassword(Usuario usuario, String password){
@@ -85,6 +104,43 @@ public class UsuarioService {
 
     public void banearUsuario(Usuario usuario){
         usuario.setBaneado(true);
+        participanteService.cancelarParticipacionesUsuarioBaneado(usuario);
         usuarioRepository.save(usuario);
     }
+
+    public void desbanearUsuario(Usuario usuario){
+        usuario.setBaneado(false);
+        usuarioRepository.save(usuario);
+    }
+
+    @Transactional
+    public Boolean eliminarCuenta(int idUsuario) {
+        Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
+
+        if (usuario.isPresent()){
+            Usuario usuarioAEliminar = usuario.get();
+            // Cancela y elimina las actividades creadas por el  usuario
+            actividadService.cancelarActividadesUsuarioEliminado(usuarioAEliminar.getId());
+            // Cancela las participaciones del usuario en equipos
+            equipoMiembroService.eliminarMiembroYEquiposUsuarioEliminado(usuarioAEliminar);
+            // Cancela las participaciones del usuario en actividades activas
+            participanteService.cancelarParticipacionesUsuarioBaneado(usuarioAEliminar);
+
+            // Generar email y nickname únicos basados en el ID del usuario
+            String nuevoEmail = "deleted_" + idUsuario + "@eliminado.com";
+            String nuevoNickname = "deleted_" + idUsuario;
+
+            // Anonimizar datos del usuario
+            usuarioAEliminar.setActivo(false);
+            usuarioAEliminar.setEmail(nuevoEmail);
+            usuarioAEliminar.setNickname(nuevoNickname);
+            usuarioAEliminar.setpfp("https://res.cloudinary.com/dkl7y8jew/image/upload/v1740791519/defaul_pfp.jpg");
+            usuarioAEliminar.setName("Cuenta Eliminada"); // Opcional
+
+            usuarioRepository.save(usuarioAEliminar);
+        }
+        return false;
+    }
+
+
 }

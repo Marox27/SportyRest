@@ -26,13 +26,31 @@ public class ReporteController {
     }
 
     @GetMapping("/usuario")
-    public List<Reporte> obtenerReportesUsuario(@RequestParam int idUsuario) {
+    public List<Reporte> obtenerReportesUsuario(int idUsuario) {
         return reporteService.obtenerReportesUsuario(idUsuario);
+    }
+
+    @GetMapping("/usuario-reportante")
+    public List<Reporte> obtenerReportesUsuarioReportante(@RequestParam int idUsuario) {
+        return reporteService.obtenerReportesUsuarioReportante(idUsuario);
+    }
+
+    @GetMapping("/usuario-reportado")
+    public List<Reporte> obtenerReportesUsuarioReportado(@RequestParam int idUsuario) {
+        return reporteService.obtenerReportesUsuarioReportado(idUsuario);
     }
 
     @GetMapping("/pendientes")
     public List<Reporte> obtenerReportesPendientes() {
         return reporteService.obtenerReportesPendientes();
+    }
+
+    @GetMapping("/comprobar-existente")
+    public ResponseEntity<Boolean> comprobarReporteExistente(@RequestParam int idUsuario,
+                                                             @RequestParam int idActividad,
+                                                             @RequestParam String entidad){
+        boolean existe = reporteService.comprobarReporteExistente(idUsuario, idActividad, entidad);
+        return ResponseEntity.ok(existe);
     }
 
     @PutMapping("/revisar")

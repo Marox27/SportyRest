@@ -61,6 +61,22 @@ public class ParticipanteController {
         return ResponseEntity.ok(resultado);
     }
 
+    @PostMapping("/cancelar")
+    public ResponseEntity<Boolean> cancelarParticipacion(
+            @RequestParam int idActividad,
+            @RequestParam int usuarioId) {
+        boolean resultado = participanteService.cancelarParticipacionSinReembolso(idActividad, usuarioId);
+        return ResponseEntity.ok(resultado);
+    }
+
+    @PostMapping("/cancelar-con-reembolso")
+    public ResponseEntity<Boolean> cancelarParticipacionConReembolso(
+            @RequestParam int idActividad,
+            @RequestParam int usuarioId) {
+        boolean resultado = participanteService.cancelarParticipacionYReembolso(idActividad, usuarioId);
+        return ResponseEntity.ok(resultado);
+    }
+
 
 
 }

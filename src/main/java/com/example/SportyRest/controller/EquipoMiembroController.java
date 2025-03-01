@@ -32,6 +32,12 @@ public class EquipoMiembroController {
         return new ResponseEntity<>(miembros, HttpStatus.OK);
     }
 
+    // Obtener todos de los que es miembro un usuario
+    @GetMapping("/miembro/{idUsuario}")
+    public ResponseEntity<List<Equipo>> getEquiposPorUsuarioMiembro(@PathVariable int idUsuario) {
+        return ResponseEntity.ok(equipoMiembroService.obtenerEquiposPorUsuarioMiembro(idUsuario));
+    }
+
     // Obtener un miembro por ID
     @GetMapping("/{id}")
     public ResponseEntity<Equipo_miembro> obtenerMiembroPorId(@PathVariable int id) {

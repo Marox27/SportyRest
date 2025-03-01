@@ -89,6 +89,19 @@ public class ActividadController {
         return ResponseEntity.ok(actividadesUsuario);
     }
 
+    @GetMapping("/creadas/{idUsuario}")
+    public ResponseEntity<List<Actividad>> getActividadesUsuarioCreadas(@PathVariable Long idUsuario) {
+        List<Actividad> actividadesUsuario = actividadService.getActividadesCreadasPorUsuario(idUsuario);
+        return ResponseEntity.ok(actividadesUsuario);
+    }
+
+    @PostMapping("/cancelar/{idActividad}")
+    public ResponseEntity<Boolean> cancelarActividad(@PathVariable int idActividad){
+        boolean exito = actividadService.cancelarActividad(idActividad);
+
+        return ResponseEntity.ok(exito);
+    }
+
 
 
 }

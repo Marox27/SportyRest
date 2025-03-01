@@ -11,6 +11,7 @@ import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ParticipanteService {
@@ -21,6 +22,8 @@ public class ParticipanteService {
     private ActividadRepository actividadRepository;
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private PagoService pagoService;
 
     public Participante createParticipante(Participante participante) {
         return participanteRepository.save(participante);
@@ -83,5 +86,48 @@ public class ParticipanteService {
         }
     }
 
+    // Elimina la participacion de un usuario en una actividad y le reembolsa el dinero.
+    public boolean cancelarParticipacionSinReembolso(int idUsuario, int idActividad){
+        Usuario usuarioParticipante = usuarioRepository.findByIdusuario(idUsuario);
+        Actividad actividad = actividadRepository.findById(idActividad);
+        Optional<Participante> participante =
+                Optional.ofNullable(participanteRepository.findByActividadAndUsuario(actividad, usuarioParticipante));
+
+        if (participante.isPresent()) {
+            participanteRepository.delete(participante.get());
+            return true;
+        }
+        return false;
+    }
+
+    // Elimina la participacion de un usuario en una actividad y le reembolsa el dinero.
+    public boolean cancelarParticipacionYReembolso(int idUsuario, int idActividad){
+        Usuario usuarioParticipante = usuarioRepository.findByIdusuario(idUsuario);
+        Actividad actividad = actividadRepository.findById(idActividad);
+        Optional<Participante> participante =
+                Optional.ofNullable(participanteRepository.findByActividadAndUsuario(actividad, usuarioParticipante));
+
+        if (participante.isPresent()) {
+            if (actividad.getPrecio() > 0){
+                pagoService.reembolsarPagoCancelacionUsuario(actividad, usuarioParticipante);
+            }
+            participanteRepository.delete(participante.get());
+            return true;
+        }
+        return false;
+    }
+
+
+    public boolean cancelarParticipacionesUsuarioBaneado(Usuario usuario){
+        List<Participante> participacionesActivasDeUsuario = participanteRepository.findActiveParticipationsByUser(usuario);
+
+        if (participacionesActivasDeUsuario != null && !participacionesActivasDeUsuario.isEmpty()){
+            for (Participante participante: participacionesActivasDeUsuario) {
+                participanteRepository.delete(participante);
+            }
+            return true;
+        }
+        return false;
+    }
 
 }

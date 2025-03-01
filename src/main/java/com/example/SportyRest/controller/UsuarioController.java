@@ -30,19 +30,17 @@ public class UsuarioController {
         return ResponseEntity.ok(newUser);
     }
 
+    @PostMapping("/edit")
+    public ResponseEntity<Boolean> updateUserInfo(@RequestBody Usuario usuario) {
+        boolean exito = usuarioService.updateUsuarioInfo(usuario);
+        return ResponseEntity.ok(exito);
+    }
+
     @PostMapping("/updatePass")
     public ResponseEntity<Usuario> updatePassword(@RequestParam String nickname, @RequestParam String password){
         System.out.println(nickname + " " + password);
         Usuario usuario = usuarioService.getUserByNickname(nickname);
         usuarioService.updatePassword(usuario, password);
-
-        return ResponseEntity.ok(usuario);
-    }
-
-    @PostMapping("/delete")
-    public ResponseEntity<Usuario> deleteUser(@RequestParam int user_id){
-        Usuario usuario = usuarioService.getUserById(user_id);
-        usuario = usuarioService.deleteUser(usuario);
 
         return ResponseEntity.ok(usuario);
     }
@@ -77,6 +75,22 @@ public class UsuarioController {
         }
         usuarioService.banearUsuario(usuario);
         return ResponseEntity.ok(true);
+    }
+
+    @PostMapping("/desban-user")
+    public ResponseEntity<Boolean>desbanearUsuario(@RequestParam int idUsuario){
+        Usuario usuario = usuarioService.getUserById(idUsuario);
+        if (usuario == null){
+            return ResponseEntity.ok(false);
+        }
+        usuarioService.desbanearUsuario(usuario);
+        return ResponseEntity.ok(true);
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<Boolean>eliminarCuenta(@RequestParam int idUsuario){
+        boolean exito = usuarioService.eliminarCuenta(idUsuario);
+        return ResponseEntity.ok(exito);
     }
 
 }
