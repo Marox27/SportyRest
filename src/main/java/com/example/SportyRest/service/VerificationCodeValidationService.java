@@ -3,6 +3,7 @@ package com.example.SportyRest.service;
 import com.example.SportyRest.model.VerificationCode;
 import com.example.SportyRest.repository.VerificationCodeRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +16,7 @@ public class VerificationCodeValidationService {
         this.verificationCodeRepository = verificationCodeRepository;
     }
 
+    @Transactional
     public boolean validateCode(String inputCode, String email) {
         VerificationCode verificationCode = verificationCodeRepository.findByEmail(email);
 

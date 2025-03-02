@@ -4,6 +4,7 @@ import com.example.SportyRest.model.Deporte;
 import com.example.SportyRest.repository.DeporteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,10 +23,12 @@ public class DeporteService {
         return deporteRepository.findById(id);
     }
 
+    @Transactional
     public Deporte guardarDeporte(Deporte deporte) {
         return deporteRepository.save(deporte);
     }
 
+    @Transactional
     public void eliminarDeporte(int id) {
         deporteRepository.deleteById(id);
     }

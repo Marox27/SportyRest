@@ -9,6 +9,7 @@ import com.example.SportyRest.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,10 +26,12 @@ public class ParticipanteService {
     @Autowired
     private PagoService pagoService;
 
+    @Transactional
     public Participante createParticipante(Participante participante) {
         return participanteRepository.save(participante);
     }
 
+    @Transactional
     public void deleteParticipante(int id) {
         participanteRepository.deleteById(id);
     }
@@ -68,6 +71,7 @@ public class ParticipanteService {
         return participanteRepository.findActividadesByUsuarioId(idUsuario);
     }
 
+    @Transactional
     public boolean unirseActividad(int idActividad, int usuarioId) {
         try {
             // Crear un nuevo participante directamente con los IDs
@@ -87,6 +91,7 @@ public class ParticipanteService {
     }
 
     // Elimina la participacion de un usuario en una actividad y le reembolsa el dinero.
+    @Transactional
     public boolean cancelarParticipacionSinReembolso(int idUsuario, int idActividad){
         Usuario usuarioParticipante = usuarioRepository.findByIdusuario(idUsuario);
         Actividad actividad = actividadRepository.findById(idActividad);
@@ -101,6 +106,7 @@ public class ParticipanteService {
     }
 
     // Elimina la participacion de un usuario en una actividad y le reembolsa el dinero.
+    @Transactional
     public boolean cancelarParticipacionYReembolso(int idUsuario, int idActividad){
         Usuario usuarioParticipante = usuarioRepository.findByIdusuario(idUsuario);
         Actividad actividad = actividadRepository.findById(idActividad);
@@ -117,7 +123,7 @@ public class ParticipanteService {
         return false;
     }
 
-
+    @Transactional
     public boolean cancelarParticipacionesUsuarioBaneado(Usuario usuario){
         List<Participante> participacionesActivasDeUsuario = participanteRepository.findActiveParticipationsByUser(usuario);
 

@@ -10,6 +10,7 @@ import com.example.SportyRest.repository.ReporteRepository;
 import com.example.SportyRest.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class ReporteService {
 
     private static final int MAX_REPORTES_PARA_BAN = 3;
 
+    @Transactional
     public Reporte crearReporte(Reporte reporte) {
         Reporte nuevoReporte = reporteRepository.save(reporte);
         //verificarBaneo(reporte.getUsuarioReportado());
@@ -56,6 +58,7 @@ public class ReporteService {
         return reporteRepository.findByRevisadoFalse();
     }
 
+    @Transactional
     public Boolean comprobarReporteExistente(int idUsuario, int idEntidad, String entidad){
         Usuario usuarioReportante = usuarioRepository.findByIdusuario(idUsuario);
         Reporte reporte = null;
@@ -80,12 +83,14 @@ public class ReporteService {
     }
 
 
+    @Transactional
     public void marcarComoRevisado(int id) {
         Reporte reporte = reporteRepository.findById(id).orElseThrow(() -> new RuntimeException("Reporte no encontrado"));
         reporte.setRevisado(true);
         reporteRepository.save(reporte);
     }
 
+    @Transactional
     private void verificarBaneo(Usuario usuario) {
         int cantidadReportes = reporteRepository.countByUsuarioReportado(usuario);
         if (cantidadReportes >= MAX_REPORTES_PARA_BAN) {

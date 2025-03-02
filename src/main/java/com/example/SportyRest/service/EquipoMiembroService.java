@@ -7,6 +7,8 @@ import com.example.SportyRest.repository.EquipoMiembroRepository;
 import com.example.SportyRest.repository.EquipoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +20,7 @@ public class EquipoMiembroService {
     @Autowired
     private EquipoRepository equipoRepository;
 
+    @Transactional
     public Equipo_miembro crearMiembro(Equipo_miembro equipoMiembro) {
         // Guardamos el nuevo miembro
         Equipo_miembro equipo_miembro_guardado = equipoMiembroRepository.save(equipoMiembro);
@@ -57,6 +60,7 @@ public class EquipoMiembroService {
         return equipoMiembroRepository.findById(id);
     }
 
+    @Transactional
     public void eliminarMiembro(int id) {
         Equipo_miembro miembro = equipoMiembroRepository.findByIdMiembro(id);
         equipoMiembroRepository.delete(miembro);
@@ -66,6 +70,7 @@ public class EquipoMiembroService {
         equipoRepository.save(equipo);
     }
 
+    @Transactional
     public void eliminarMiembroYEquiposUsuarioEliminado(Usuario usuario){
         // Obtenemos todos las participaciones que tiene el usuario en diferentes equipos
         List<Equipo_miembro> equipoMiembros = equipoMiembroRepository.findByUsuario(usuario);

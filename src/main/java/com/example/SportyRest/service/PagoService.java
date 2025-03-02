@@ -27,6 +27,7 @@ public class PagoService {
     @Autowired
     private NotificacionRepository notificacionRepository;
 
+    @Transactional
     public Pago registrarPago(Pago pago) {
         pago.setReembolsado(false);
         pago.setLiberado(false); // Se marca como retenido hasta que la actividad finalice
@@ -38,6 +39,8 @@ public class PagoService {
         return pagoRepository.findByUsuario(usuario);
     }
 
+    // Se encargar de liberar los pagos que estaban retenidos de una actividad ya completada con éxito.
+    @Transactional
     public void liberarPagos(Actividad actividad) {
         List<Pago> pagosPendientes = pagoRepository.findByActividadAndLiberadoFalse(actividad);
 
@@ -65,6 +68,7 @@ public class PagoService {
     }
 
     // Realiza el reembolso del coste la participación del usuario cuando este la cancela.
+    @Transactional
     public void reembolsarPagoCancelacionUsuario(Actividad actividad, Usuario usuario){
         Pago pagoAReembolsar = pagoRepository.findByActividadAndUsuarioAndReembolsadoFalse(actividad, usuario);
         pagoAReembolsar.setObservaciones("Reembolso de " + pagoAReembolsar.getCantidad()
@@ -74,6 +78,7 @@ public class PagoService {
     }
 
     // Reembolsa los pagos a los usuarios cuando el creador cancela una actividad
+    @Transactional
     public void reembolsarPagosCancelacionCreador(Actividad actividad) {
         List<Pago> pagosPendientes = pagoRepository.findByActividadAndLiberadoFalse(actividad);
         if (!pagosPendientes.isEmpty()) {

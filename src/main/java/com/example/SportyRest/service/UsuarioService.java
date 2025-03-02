@@ -30,6 +30,7 @@ public class UsuarioService {
     @Autowired
     private ActividadService actividadService;
 
+    @Transactional
     public Usuario createUser(Usuario usuario) {
         // Hashear la contraseña antes de guardar
         String user_pass = usuario.getPassword();
@@ -44,6 +45,7 @@ public class UsuarioService {
         }
     }
 
+    @Transactional
     public boolean updateUsuarioInfo(Usuario usuario){
         Usuario usuarioOriginal = usuarioRepository.findByIdusuario(usuario.getId().intValue());
         usuarioOriginal.setName(usuario.getName());
@@ -54,17 +56,22 @@ public class UsuarioService {
         return true;
     }
 
+    @Transactional
     public void updatePassword(Usuario usuario, String password){
         usuario.setPassword(password);
         usuarioRepository.save(usuario);
     }
 
+    // Se encarga del eliminar la cuenta de usuario cuando este decide eliminar su cuenta.
+    @Transactional
     public Usuario deleteUser(Usuario usuario){
         usuario.setActivo(false);
         manejarEliminacionUsuario(usuario);
         return usuarioRepository.save(usuario);
     }
 
+    // Elimina las cosas que aten al usuario y se cambia sus datos por unos anonimos para poder "eliminar" su cuenta.
+    @Transactional
     public void manejarEliminacionUsuario(Usuario usuario) {
         if (!usuario.isActivo()) {
             List<Equipo> equipos = equipoMiembroRepository.findEquiposByUsuarioId(usuario.getId().intValue());
@@ -98,16 +105,19 @@ public class UsuarioService {
 
     public Usuario getUserByMail(String mail){return usuarioRepository.findByMail(mail);}
 
+    @Transactional
     public void actualizarUsuario(Usuario usuario) {
         usuarioRepository.save(usuario);
     }
 
+    @Transactional
     public void banearUsuario(Usuario usuario){
         usuario.setBaneado(true);
         participanteService.cancelarParticipacionesUsuarioBaneado(usuario);
         usuarioRepository.save(usuario);
     }
 
+    @Transactional
     public void desbanearUsuario(Usuario usuario){
         usuario.setBaneado(false);
         usuarioRepository.save(usuario);

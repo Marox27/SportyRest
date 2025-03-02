@@ -3,6 +3,7 @@ package com.example.SportyRest.service;
 import com.example.SportyRest.model.VerificationCode;
 import com.example.SportyRest.repository.VerificationCodeRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Random;
@@ -16,6 +17,7 @@ public class VerificationCodeGeneratorService {
         this.verificationCodeRepository = verificationCodeRepository;
     }
 
+    @Transactional
     public VerificationCode generateCode(String email) {
         // Lo primero elimina códigos que ya estén expirados
         verificationCodeRepository.deleteByExpirationTimeBefore(LocalDateTime.now());

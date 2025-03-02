@@ -11,6 +11,7 @@ import com.example.SportyRest.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,6 +37,7 @@ public class ActividadService {
     private NotificacionService notificacionService;
 
     // Crear actividad
+    @Transactional
     public void crearActividad(Actividad actividad) {
         // Verifica que la actividad tenga un ID asignado después de guardarla
         actividad.setFecha_publicacion(LocalDate.now().toString()); // Establece la fecha de publicación
@@ -47,6 +49,7 @@ public class ActividadService {
 
 
     // Eliminar actividad por ID
+    @Transactional
     public boolean eliminarActividad(int idActividad) {
         Optional<Actividad> actividad = Optional.ofNullable(actividadRepository.findById(idActividad));
         if (actividad.isPresent()) {
@@ -74,6 +77,8 @@ public class ActividadService {
         return actividadRepository.findByCreador(idUsuario);
     }
 
+    // Acciones cuando el usuario cancela una actividad
+    @Transactional
     public Boolean cancelarActividad(int idActividad){
         Optional<Actividad> actividad = Optional.ofNullable(actividadRepository.findById(idActividad));
 
@@ -87,6 +92,8 @@ public class ActividadService {
         return false;
     }
 
+    // Acciones cuando el usuario elimina su cuenta y estaba participando en alguna actividad. Se eliminan sus participaciones pendientes.
+    @Transactional
     public void cancelarActividadesUsuarioEliminado(Long idUsuario){
         List<Actividad> actividadList = actividadRepository.findByCreadorAndActivoTrue(idUsuario);
         if (actividadList != null && !actividadList.isEmpty()){
@@ -96,6 +103,8 @@ public class ActividadService {
         }
     }
 
+    // Se cancela la actividad, las participaciones y se reembolsa el importe de las participaciones (si hubiera) por falta de participantes.
+    @Transactional
     public void cancelarActividadFaltaParticipantes(Actividad actividad){
         // Se envía una notificación a todos los participantes de la actividad cancelada.
         notificacionService.enviarNotificacionesActividadCanceladaAutomatica(actividad);
@@ -105,6 +114,7 @@ public class ActividadService {
 
     // Da por finalizadas las actividades que han cumplido el plazo establecido
     @Scheduled(fixedRate = 300000) // Cada 5 minutos
+    @Transactional
     public void validarActividadesFinalizadas() {
         //Obtener todas las actividades activas
         List<Actividad> actividades = actividadRepository.findByActivoTrue();

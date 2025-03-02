@@ -9,6 +9,7 @@ import com.example.SportyRest.repository.ParticipanteRepository;
 import com.example.SportyRest.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,11 +33,14 @@ public class NotificacionService {
         return notificacionRepository.findByReceptor(usuario);
     }
 
+    @Transactional
     public Notificacion crearNotificacion(Notificacion notificacion) {
         notificacion.setFechaCreacion(LocalDateTime.now().toString());
         return notificacionRepository.save(notificacion);
     }
 
+    // Marca el campo leido de las notificaciones, para las notificaciones que se le pase.
+    @Transactional
     public Boolean marcarNotificacionesComoLeidas(List<Integer> idsNotificaciones){
         if (idsNotificaciones == null || idsNotificaciones.isEmpty()) {
             return false;
@@ -53,6 +57,7 @@ public class NotificacionService {
     }
 
     // Envia una notificación a todos los participantes cuando la actividad ha terminado
+    @Transactional
     public void enviarNotificacionesFinActividad(Actividad actividad) {
         List<Participante> participantes = participanteRepository.findByActividad(actividad);
         Usuario creador = usuarioRepository.findByIdusuario(actividad.getCreador());
@@ -79,6 +84,7 @@ public class NotificacionService {
     }
 
     // Envía una notificación a todos los participantes de la actividad cuando esta se cancela.
+    @Transactional
     public void enviarNotificacionesActividadCancelada(Actividad actividad) {
         List<Participante> participantes = participanteRepository.findByActividad(actividad);
         Usuario creador = usuarioRepository.findByIdusuario(actividad.getCreador());
@@ -99,6 +105,7 @@ public class NotificacionService {
         }
     }
 
+    @Transactional
     public void enviarNotificacionesActividadCanceladaAutomatica(Actividad actividad) {
         List<Participante> participantes = participanteRepository.findByActividad(actividad);
         Usuario SportyHub = usuarioRepository.findByIdusuario(1);

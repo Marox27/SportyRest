@@ -65,6 +65,7 @@ public class EquipoService {
     }
 
     // Actualizar un equipo
+    @Transactional
     public Equipo updateEquipo(int id, Equipo equipoDetails) {
         return equipoRepository.findById(id).map(equipo -> {
             equipo.setNombre(equipoDetails.getNombre());
@@ -81,6 +82,7 @@ public class EquipoService {
     }
 
     // Eliminar un equipo
+    @Transactional
     public void deleteEquipo(int id) {
         equipoRepository.deleteById(id);
     }
