@@ -82,8 +82,12 @@ public class EquipoController {
     @PostMapping("/subirImagen")
     public ResponseEntity<String> subirImagen(@RequestParam("image") MultipartFile file) {
         try {
-            Dotenv dotenv = Dotenv.load();
-            Cloudinary cloudinary = new Cloudinary(dotenv.get("CLOUDINARY_URL"));
+            String cloudinaryUrl = System.getenv("CLOUDINARY_URL");
+            if (cloudinaryUrl == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cloudinary URL no está configurado");
+            }
+
+            Cloudinary cloudinary = new Cloudinary(cloudinaryUrl);
 
             Map params1 = ObjectUtils.asMap(
                     "use_filename", true,
