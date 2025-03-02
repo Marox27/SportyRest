@@ -4,6 +4,8 @@ import com.example.SportyRest.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
@@ -13,6 +15,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Usuario findByIdusuario(int id);
 
     Usuario findByMail(String mail);
+
+    List<Usuario> findByAdminFalse();
 
 
 }

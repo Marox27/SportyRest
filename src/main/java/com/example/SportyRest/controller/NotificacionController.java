@@ -33,12 +33,25 @@ public class NotificacionController {
         return new ResponseEntity<>(ok, HttpStatus.OK);
     }
 
-
-
-
     @PostMapping("/crear")
     public Notificacion crearNotificacion(@RequestBody Notificacion notificacion) {
         return notificacionService.crearNotificacion(notificacion);
+    }
+
+    @PostMapping("/crear-aviso")
+    public ResponseEntity<Void> crearAviso(@RequestParam String titulo,
+                                           @RequestParam String cuerpo,
+                                           @RequestParam int idUsuario){
+        try {
+            notificacionService.crearAviso(titulo, cuerpo, idUsuario);
+            return ResponseEntity.ok().build(); // Forma correcta de devolver HTTP 200 sin cuerpo
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null); // Devuelve HTTP 400 si el usuario no existe
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // Devuelve HTTP 204 si no hay receptores
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Manejo general de errores
+        }
     }
 
 

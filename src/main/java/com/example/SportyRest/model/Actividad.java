@@ -16,6 +16,9 @@ public class Actividad {
     @Column(nullable = false)
     private String titulo;
 
+    @Column(nullable = true, name = "descripcion")
+    private String descripcion;
+
     @Column(nullable = false)
     private String fecha;
 
@@ -79,6 +82,14 @@ public class Actividad {
 
     public void setTitulo(String titulo) {
         this.titulo = titulo;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public String getFecha() {

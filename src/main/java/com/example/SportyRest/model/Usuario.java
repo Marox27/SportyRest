@@ -19,7 +19,7 @@ public class Usuario {
     private String fecha_nacimiento;
     private String ciudad;
     private String pfp;
-    private boolean is_admin;
+    private boolean admin;
     private boolean activo;
     private boolean baneado = false;
 
@@ -103,12 +103,12 @@ public class Usuario {
         this.pfp = pfp;
     }
 
-    public boolean isIs_admin() {
-        return is_admin;
+    public boolean isAdmin() {
+        return admin;
     }
 
-    public void setIs_admin(boolean is_admin) {
-        this.is_admin = is_admin;
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
     public boolean isActivo() {

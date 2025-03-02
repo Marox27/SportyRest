@@ -31,7 +31,7 @@ public class AuthController {
             return ResponseEntity.status(401).body("Credenciales inválidas");
         }
         if (user.isActivo()) {
-            if (user.isIs_admin()) {
+            if (user.isAdmin()) {
                 claims.put("role", "ADMIN");
                 claims.put("isAdmin", true);
                 String token = jwtTokenUtil.generateToken(user.getNickname(), claims);

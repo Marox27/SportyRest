@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,6 +38,36 @@ public class NotificacionService {
     public Notificacion crearNotificacion(Notificacion notificacion) {
         notificacion.setFechaCreacion(LocalDateTime.now().toString());
         return notificacionRepository.save(notificacion);
+    }
+
+    // Envía una misma notificacion a todos los usuarios no administradores.
+    @Transactional
+    public void crearAviso(String titulo, String cuerpo, int idUsuario){
+        // Buscar el usuario emisor
+        Usuario creador = usuarioRepository.findByIdusuario(idUsuario);
+        if (creador == null) {
+            throw new IllegalArgumentException("El usuario con ID " + idUsuario + " no existe.");
+        }
+
+        // Obtener los usuarios que no son administradores
+        List<Usuario> receptores = usuarioRepository.findByAdminFalse();
+        if (receptores.isEmpty()) {
+            throw new IllegalStateException("No hay usuarios receptores para el aviso.");
+        }
+
+        List<Notificacion> notificaciones = new ArrayList<>();
+
+        for (Usuario receptor: receptores) {
+            Notificacion notificacion = new Notificacion();
+            notificacion.setTitulo(titulo);
+            notificacion.setMensaje(cuerpo);
+            notificacion.setEmisor(creador);
+            notificacion.setReceptor(receptor);
+            notificacion.setFechaCreacion(LocalDateTime.now().toString());
+            notificaciones.add(notificacion);
+        }
+
+        notificacionRepository.saveAll(notificaciones);
     }
 
     // Marca el campo leido de las notificaciones, para las notificaciones que se le pase.
