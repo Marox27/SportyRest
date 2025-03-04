@@ -73,7 +73,7 @@ public class ParticipanteController {
     public ResponseEntity<Boolean> cancelarParticipacionConReembolso(
             @RequestParam int idActividad,
             @RequestParam int usuarioId) {
-        boolean resultado = participanteService.cancelarParticipacionYReembolso(idActividad, usuarioId);
+        boolean resultado = participanteService.cancelarParticipacionYReembolso(usuarioId, idActividad);
         return ResponseEntity.ok(resultado);
     }
 

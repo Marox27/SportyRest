@@ -32,19 +32,24 @@ public class EquipoService {
     // Crear un equipo
     @Transactional
     public Equipo createEquipo(Equipo equipo) {
-        // Guardar el equipo
-        equipo.setMiembros(1);
-        Equipo equipoGuardado = equipoRepository.save(equipo);
+        Equipo equipoGuardado;
+        if (equipo.getIdequipo() == null) {
+            // Guardar el equipo
+            equipo.setMiembros(1);
+            equipoGuardado = equipoRepository.save(equipo);
 
-        // Crear el miembro (creador del equipo)
-        Equipo_miembro equipoMiembro = new Equipo_miembro();
-        equipoMiembro.setEquipo(equipoGuardado);
-        equipoMiembro.setUsuario(usuarioRepository.findByIdusuario(equipoGuardado.getCreador()));
-        equipoMiembro.setRol(Equipo_miembro.Rol.ADMIN);
+            // Crear el miembro (creador del equipo)
+            Equipo_miembro equipoMiembro = new Equipo_miembro();
+            equipoMiembro.setEquipo(equipoGuardado);
+            equipoMiembro.setUsuario(usuarioRepository.findByIdusuario(equipoGuardado.getCreador()));
+            equipoMiembro.setRol(Equipo_miembro.Rol.ADMIN);
 
-        // Guardar el equipo miembro
-        equipoMiembroRepository.save(equipoMiembro);
-
+            // Guardar el equipo miembro
+            equipoMiembroRepository.save(equipoMiembro);
+        }else{
+            System.out.println("EDITANDO EQUIPO");
+            equipoGuardado = equipoRepository.save(equipo);
+        }
         return equipoGuardado;
     }
 

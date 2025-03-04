@@ -1,6 +1,7 @@
 package com.example.SportyRest.service;
 
 import com.example.SportyRest.model.Actividad;
+import com.example.SportyRest.model.Notificacion;
 import com.example.SportyRest.model.Participante;
 import com.example.SportyRest.model.Usuario;
 import com.example.SportyRest.repository.ActividadRepository;
@@ -25,6 +26,8 @@ public class ParticipanteService {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private PagoService pagoService;
+    @Autowired
+    private NotificacionService notificacionService;
 
     @Transactional
     public Participante createParticipante(Participante participante) {
@@ -33,7 +36,17 @@ public class ParticipanteService {
 
     @Transactional
     public void deleteParticipante(int id) {
-        participanteRepository.deleteById(id);
+        Participante participante = participanteRepository.findById(id).get();
+
+        // Envía una notificación al lider, de que se han unido a su actividad.
+        Notificacion notificacion = new Notificacion();
+        notificacion.setEmisor(participante.getUsuario());
+        notificacion.setReceptor(usuarioRepository.findByIdusuario(participante.getActividad().getCreador()));
+        notificacion.setTitulo("Abandono a actividad");
+        notificacion.setMensaje("¡" + participante.getUsuario().getNickname() + " ha abandonado la actividad " + participante.getActividad().getTitulo() + "!");
+        notificacionService.crearNotificacion(notificacion);
+
+        participanteRepository.delete(participante);
     }
 
     public List<Participante> getParticipantesByActividad(int actividadId) {
@@ -83,6 +96,14 @@ public class ParticipanteService {
             // Guardar el nuevo participante utilizando el servicio correspondiente
             participanteRepository.save(participante);
 
+            // Envía una notificación al lider, de que se han unido a su actividad.
+            Notificacion notificacion = new Notificacion();
+            notificacion.setEmisor(participante.getUsuario());
+            notificacion.setReceptor(usuarioRepository.findByIdusuario(participante.getActividad().getCreador()));
+            notificacion.setTitulo("Unión a actividad");
+            notificacion.setMensaje("¡" + participante.getUsuario().getNickname() + " se ha unido a la actividad " + participante.getActividad().getTitulo() + "!");
+            notificacionService.crearNotificacion(notificacion);
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,6 +131,7 @@ public class ParticipanteService {
     public boolean cancelarParticipacionYReembolso(int idUsuario, int idActividad){
         Usuario usuarioParticipante = usuarioRepository.findByIdusuario(idUsuario);
         Actividad actividad = actividadRepository.findById(idActividad);
+
         Optional<Participante> participante =
                 Optional.ofNullable(participanteRepository.findByActividadAndUsuario(actividad, usuarioParticipante));
 

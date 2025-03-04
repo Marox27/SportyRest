@@ -148,6 +148,7 @@ public class UsuarioService {
             usuarioAEliminar.setName("Cuenta Eliminada"); // Opcional
 
             usuarioRepository.save(usuarioAEliminar);
+            return true;
         }
         return false;
     }

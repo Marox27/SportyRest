@@ -47,9 +47,9 @@ public class ReporteController {
 
     @GetMapping("/comprobar-existente")
     public ResponseEntity<Boolean> comprobarReporteExistente(@RequestParam int idUsuario,
-                                                             @RequestParam int idActividad,
+                                                             @RequestParam int idEntidad,
                                                              @RequestParam String entidad){
-        boolean existe = reporteService.comprobarReporteExistente(idUsuario, idActividad, entidad);
+        boolean existe = reporteService.comprobarReporteExistente(idUsuario, idEntidad, entidad);
         return ResponseEntity.ok(existe);
     }
 

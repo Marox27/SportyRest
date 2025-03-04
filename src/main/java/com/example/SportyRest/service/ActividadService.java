@@ -86,7 +86,9 @@ public class ActividadService {
             // Se envía una notificación a todos los participantes de la actividad cancelada.
             notificacionService.enviarNotificacionesActividadCancelada(actividad.get());
             pagoService.reembolsarPagosCancelacionCreador(actividad.get());
-            actividadRepository.delete(actividad.get());
+            Actividad actividadSeleccionada = actividad.get();
+            actividadSeleccionada.setActivo(false);
+            actividadRepository.save(actividadSeleccionada);
             return true;
         }
         return false;

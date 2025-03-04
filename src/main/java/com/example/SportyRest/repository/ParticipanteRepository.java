@@ -27,5 +27,9 @@ public interface ParticipanteRepository extends JpaRepository<Participante, Inte
     @Query("SELECT p.actividad FROM Participante p WHERE p.usuario.id = :idUsuario AND p.confirmado = true")
     List<Actividad> findActividadesByUsuarioId(@Param("idUsuario") int idUsuario);
 
+    @Query("SELECT p FROM Participante p WHERE p.actividad.id = :actividadId AND p.usuario.id = :usuarioId")
+    Participante findByActividadAndUsuario(@Param("actividadId") int actividadId, @Param("usuarioId") int usuarioId);
+
+
 }
 

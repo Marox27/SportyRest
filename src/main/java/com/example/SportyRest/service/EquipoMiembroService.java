@@ -2,9 +2,11 @@ package com.example.SportyRest.service;
 
 import com.example.SportyRest.model.Equipo;
 import com.example.SportyRest.model.Equipo_miembro;
+import com.example.SportyRest.model.Notificacion;
 import com.example.SportyRest.model.Usuario;
 import com.example.SportyRest.repository.EquipoMiembroRepository;
 import com.example.SportyRest.repository.EquipoRepository;
+import com.example.SportyRest.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,10 @@ public class EquipoMiembroService {
     private EquipoMiembroRepository equipoMiembroRepository;
     @Autowired
     private EquipoRepository equipoRepository;
+    @Autowired
+    private NotificacionService notificacionService;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Transactional
     public Equipo_miembro crearMiembro(Equipo_miembro equipoMiembro) {
@@ -30,6 +36,17 @@ public class EquipoMiembroService {
         int numeroDeMiembros = equipoMiembroRepository.countByEquipo(equipo);
         equipo.setMiembros(numeroDeMiembros);
         equipoRepository.saveAndFlush(equipo);
+
+        Usuario nuevo_miembro = equipoMiembro.getUsuario();
+        Usuario lider = equipoMiembroRepository.findByEquipoAndRol(equipo, Equipo_miembro.Rol.ADMIN).getUsuario();
+
+        // Envía una notificación al lider, de que se ha unido un miembro a su equipo
+        Notificacion notificacion = new Notificacion();
+        notificacion.setEmisor(nuevo_miembro);
+        notificacion.setReceptor(lider);
+        notificacion.setTitulo("Unión al equipo");
+        notificacion.setMensaje("¡" + nuevo_miembro.getNickname() + " se ha unido al equipo " + equipo.getNombre() + "!");
+        notificacionService.crearNotificacion(notificacion);
 
         // Por último devolvemos los datos del miembro
         return equipo_miembro_guardado;
@@ -63,6 +80,17 @@ public class EquipoMiembroService {
     @Transactional
     public void eliminarMiembro(int id) {
         Equipo_miembro miembro = equipoMiembroRepository.findByIdMiembro(id);
+        Usuario miembroEliminado = miembro.getUsuario();
+        Usuario lider = equipoMiembroRepository.findByEquipoAndRol(miembro.getEquipo(), Equipo_miembro.Rol.ADMIN).getUsuario();
+
+        // Envía una notificación al lider, de que se ha unido un miembro a su equipo
+        Notificacion notificacion = new Notificacion();
+        notificacion.setEmisor(miembroEliminado);
+        notificacion.setReceptor(lider);
+        notificacion.setTitulo("Abandono en el equipo");
+        notificacion.setMensaje("¡" + miembroEliminado.getNickname() + " ha abandonado el equipo " + miembro.getEquipo().getNombre() + "!");
+        notificacionService.crearNotificacion(notificacion);
+
         equipoMiembroRepository.delete(miembro);
         Equipo equipo = miembro.getEquipo();
         int numeroDeMiembros = equipoMiembroRepository.countByEquipo(equipo);
@@ -80,6 +108,10 @@ public class EquipoMiembroService {
         for (Equipo_miembro equipoMiembro : equipoMiembros) {
             Equipo equipo = equipoMiembro.getEquipo();
             List<Equipo_miembro> miembrosDelEquipo = equipoMiembroRepository.findByEquipo(equipo);
+            if (miembrosDelEquipo.size() > 1){
+                equipo.setMiembros(equipo.getMiembros() - 1);
+                equipoRepository.save(equipo);
+            }
 
             if (equipoMiembro.getRol().equals(Equipo_miembro.Rol.ADMIN)) {
                 if (miembrosDelEquipo.size() > 1) {

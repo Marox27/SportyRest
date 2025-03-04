@@ -20,6 +20,8 @@ public interface EquipoMiembroRepository extends JpaRepository<Equipo_miembro, I
     // Devulve el equipo dado un miembro
     Equipo_miembro findByIdMiembro(int idMiembro);
 
+    Equipo_miembro findByEquipoAndRol(Equipo equipo, Equipo_miembro.Rol rol);
+
     int countByEquipo(Equipo equipo);
 
     // Devuelve los usuarios que pertenecen a un equipo dado su id de equipo.
